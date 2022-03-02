@@ -1,0 +1,32 @@
+---
+- name: Habilitar EPEL
+  package:
+    name: epel-release
+    state: present
+
+- name: Instalar pacotes
+  package:
+    name:
+      - ansible
+      - bind-utils
+      - bzip2
+      - dnsmasq
+      - gcc
+      - kernel-devel
+      - kernel-headers
+      - libguestfs-tools
+      - libvirt
+      - libvirt-devel
+      - make
+      - perl
+      - policycoreutils-python
+      - qemu
+      - qemu-kvm
+      - rsync
+      - ruby-devel
+      - telnet
+      - tigervnc-server
+      - wget
+      - "@xfce"
+    state: present
+...

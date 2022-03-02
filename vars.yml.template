@@ -1,0 +1,68 @@
+#################################################################################
+# Variaveis para acesso ao GCP, execucao da criacao e configuracao da maquina
+
+# GCP - Google Cloud Platform
+
+# gcloud config list | grep project
+gcp_project:
+
+# gcloud config list | grep region
+region:
+
+# gcloud config list | grep zone
+zone:
+
+# Valor fixo
+gcp_cred_kind: serviceaccount
+
+# cat <<caminho do arquivo json de credenciais>> | ansible-vault encrypt_string -
+# Exemplo: cat  '/mnt/c/Users/lucas/GoogleCloud/ornate-rarity-263013-2244d4af0fd5.json'  | ansible-vault encrypt_string -
+gcp_cred_contents:
+
+#################################################################################
+# Variaveis de definicao da maquina vm01
+
+# Para a zone southamerica-east1 o range e 10.158.0.0/20
+# Consultar os demais ranges: gcloud compute networks subnets list --filter="network: ( default)" --sort-by="region"
+ip_interno:
+
+# Hostname desejado
+nome_vm:
+
+# Subdominio do freedns ou o qualquer outro dominio que desejar
+dominio:
+
+# Para uma maquina com 8 vCPU e 96GB de RAM: n2-custom-8-98304-ext
+# Demais tipos: gcloud compute machine-types list --filter="name~'^n2-.+'" --sort-by="zone,cpus,memory_gb"
+# Caso queira incluir a zone como filtro, por exemplo 'southamerica-east1-c':
+# gcloud compute machine-types list --filter="name~'^n2-.+'" --filter="zone: (southamerica-east1-c)" --sort-by="zone,cpus,memory_gb"
+tipo_maquina:
+
+# Ver seção FreeDNS no arquivo README.md
+freedns_link:
+
+
+## NAO ALTERAR AS VARIAVEIS ABAIXO
+network_tier: PREMIUM
+nome_rede_vpc: 'rede-vpc-01'
+nome_ip_interno: '{{ nome_vm }}-static-internal'
+nome_ip_externo: '{{ nome_vm }}-static-external'
+
+discos:
+  # Disco do SO
+  - nome: "{{ nome_vm }}"
+    tamanho: 20
+    tipo: pd-ssd
+    imagem: 'projects/centos-cloud/global/images/family/centos-7'
+  # Disco de dados
+  - nome: "{{ nome_vm }}-1"
+    tamanho: 1024
+    tipo: pd-balanced
+    imagem: ''
+
+mount_point_dados: "/data"
+disco_dados: "/dev/sdb"
+shell_default: "/bin/bash"
+novo_home: "{{ mount_point_dados }}/home"
+dir_kvm: "{{ mount_point_dados }}/kvm"
+

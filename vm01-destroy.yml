@@ -1,0 +1,107 @@
+---
+# Playbook para destruir a maquina do KVM e os recursos associados - vm01
+
+# Play para destruir a maquina
+- name: Destruir maquina host KVM
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Importar variaveis de acesso ao Google Cloud e definicao da maquina
+      include_vars:
+        file: vars.yml
+
+    - name: Destruir VM
+      google.cloud.gcp_compute_instance:
+        state: absent
+        name: "{{ nome_vm }}"
+        zone: "{{ zone }}"
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        scopes:
+         - https://www.googleapis.com/auth/compute
+
+    - name: Destruir disco do SO
+      google.cloud.gcp_compute_disk:
+        name: "{{ nome_vm }}"
+        zone: "{{ zone }}"
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        scopes:
+         - https://www.googleapis.com/auth/compute
+        state: absent
+      register: disco_so
+
+    - name: Destruir disco de dados
+      google.cloud.gcp_compute_disk:
+        name: "{{ nome_vm }}-1"
+        zone: "{{ zone }}"
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        scopes:
+         - https://www.googleapis.com/auth/compute
+        state: absent
+      register: disco_dados
+
+    - name: Firewall VPC - excluir regra ICMP (ping)
+      google.cloud.gcp_compute_firewall:
+        name: "{{ nome_rede_vpc }}-allow-icmp"
+        allowed:
+        - ip_protocol: ICMP
+        priority: 65534
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        source_ranges: "0.0.0.0/0"
+        state: absent
+
+    - name: Firewall VPC - excluir regra SSH
+      google.cloud.gcp_compute_firewall:
+        name: "{{ nome_rede_vpc }}-allow-ssh"
+        allowed:
+        - ip_protocol: tcp
+          ports:
+            - '22'
+        priority: 65534
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        source_ranges: "0.0.0.0/0"
+        state: absent
+
+    - name: Liberar IPv4 privado
+      google.cloud.gcp_compute_address:
+        name: "{{ nome_ip_interno }}"
+        address: "{{ ip_interno }}"
+        address_type: INTERNAL
+        region: "{{ region }}"
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        state: absent
+
+    - name: Liberar IPv4 externo
+      google.cloud.gcp_compute_address:
+        name: "{{ nome_ip_externo }}"
+        address_type: EXTERNAL
+        region: "{{ region }}"
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        state: absent
+
+    - name: Destruir rede VPC
+      google.cloud.gcp_compute_network:
+       name: "{{ nome_rede_vpc }}"
+       auto_create_subnetworks: 'true'
+       project: "{{ gcp_project }}"
+       auth_kind: "{{ gcp_cred_kind }}"
+       service_account_contents: "{{ gcp_cred_contents }}"
+       scopes:
+         - https://www.googleapis.com/auth/compute
+       state: absent
+
+...

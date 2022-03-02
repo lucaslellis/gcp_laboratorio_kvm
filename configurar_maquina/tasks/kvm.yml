@@ -1,0 +1,27 @@
+---
+- name: Adicionar usuario ao grupo de administracao do KVM
+  user:
+    name: "{{ ansible_facts.env.SUDO_USER }}"
+    groups: libvirt
+    append: yes
+
+- name: Habilitar servico do KVM
+  service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+- name: Verificar se existe pool default do KVM
+  shell:
+    cmd: "virsh pool-list --all | grep default | wc -l"
+  register: virsh_pool_default
+  changed_when: virsh_pool_default.rc == 0
+
+- name: KVM - definir local do storage pool default
+  shell:
+    cmd: "virsh pool-define-as --name default --type dir --target {{ dir_kvm }} && virsh pool-autostart default && virsh pool-start default"
+  when:
+    virsh_pool_default.stdout == "0"
+  register: virsh_pool_define
+  changed_when: virsh_pool_define.rc == 0
+...

@@ -1,0 +1,33 @@
+---
+- name: Criar disco do SO
+  google.cloud.gcp_compute_disk:
+    name: "{{ discos[0].nome }}"
+    size_gb: "{{ discos[0].tamanho }}"
+    # gcloud compute images list --standard-images --uri | grep centos
+    source_image: "{{ discos[0].imagem }}"
+    # gcloud compute disk-types list --uri | grep southamerica-east1-c
+    type: "{{ discos[0].tipo }}"
+    zone: "{{ zone }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    scopes:
+     - https://www.googleapis.com/auth/compute
+    state: present
+  register: disco_so
+
+- name: Criar disco de dados
+  google.cloud.gcp_compute_disk:
+    name: "{{ discos[1].nome }}"
+    size_gb: "{{ discos[1].tamanho }}"
+    # gcloud compute disk-types list --uri | grep southamerica-east1-c
+    type: "{{ discos[1].tipo }}"
+    zone: "{{ zone }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    scopes:
+     - https://www.googleapis.com/auth/compute
+    state: present
+  register: disco_dados
+...

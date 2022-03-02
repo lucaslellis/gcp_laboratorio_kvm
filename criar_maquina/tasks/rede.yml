@@ -1,0 +1,66 @@
+---
+- name: Criar rede VPC
+  google.cloud.gcp_compute_network:
+   name: "{{ nome_rede_vpc }}"
+   auto_create_subnetworks: 'true'
+   project: "{{ gcp_project }}"
+   auth_kind: "{{ gcp_cred_kind }}"
+   service_account_contents: "{{ gcp_cred_contents }}"
+   scopes:
+     - https://www.googleapis.com/auth/compute
+   state: present
+  register: rede_vpc
+
+- name: Firewall VPC - libera ICMP (ping)
+  google.cloud.gcp_compute_firewall:
+    name: "{{ rede_vpc.name }}-allow-icmp"
+    network:
+      selfLink: "global/networks/{{ rede_vpc.name }}"
+    allowed:
+    - ip_protocol: ICMP
+    priority: 65534
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    source_ranges: "0.0.0.0/0"
+    state: present
+
+- name: Firewall VPC - libera SSH
+  google.cloud.gcp_compute_firewall:
+    name: "{{ rede_vpc.name }}-allow-ssh"
+    network:
+      selfLink: "global/networks/{{ rede_vpc.name }}"
+    allowed:
+    - ip_protocol: tcp
+      ports:
+        - '22'
+    priority: 65534
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    source_ranges: "0.0.0.0/0"
+    state: present
+
+- name: Reservar IPv4 privado
+  google.cloud.gcp_compute_address:
+    name: "{{ nome_ip_interno }}"
+    address: "{{ ip_interno }}"
+    address_type: INTERNAL
+    region: "{{ region }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    state: present
+  register: endereco_ipv4_privado
+
+- name: Reservar IPv4 externo
+  google.cloud.gcp_compute_address:
+    name: "{{ nome_ip_externo }}"
+    address_type: EXTERNAL
+    region: "{{ region }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    state: present
+  register: endereco_ipv4_externo
+...

@@ -1,0 +1,42 @@
+---
+- name: Verificar se VM ja existe
+  google.cloud.gcp_compute_instance_info:
+    zone: "{{ zone }}"
+    filters:
+      - name = "{{ nome_vm }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+  register: vm_existe
+
+- name: Criar VM
+  command: |
+    gcloud compute instances create {{ nome_vm }}
+      --project={{ gcp_project }}
+      --zone={{ zone }}
+      --machine-type={{ tipo_maquina }}
+      --network-interface=network-tier={{ network_tier }},address={{ endereco_ipv4_externo.address }},private-network-ip={{ ip_interno }},subnet={{ rede_vpc.name }}
+      --disk=boot=yes,device-name={{ disco_so.name }},mode=rw,name={{ disco_so.name }}
+      --disk=boot=no,device-name={{ disco_dados.name }},mode=rw,name={{ disco_dados.name }}
+      --enable-nested-virtualization
+  register: gcloud_create_instance
+  when: (not vm_existe.resources is defined) or ((vm_existe.resources|length) == 0)
+  changed_when: gcloud_create_instance.rc == 0
+
+- name: Coletar informacoes sobre a VM criada
+  google.cloud.gcp_compute_instance_info:
+    zone: "{{ zone }}"
+    filters:
+      - name = "{{ nome_vm }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+  register: vm_info
+
+- name: Aborta a execucao se a VM nao estiver no ar
+  fail:
+    when: "A VM {{ nome_vm }} nao esta ativa"
+  when:
+    (vm_info.resources | selectattr('name', 'equalto', nome_vm) | length == 0) or
+    (vm_info.resources  | selectattr('name', 'equalto', nome_vm) | selectattr('status', 'equalto', 'RUNNING') | length) == 0
+...

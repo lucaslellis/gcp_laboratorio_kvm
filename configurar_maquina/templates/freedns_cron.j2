@@ -1,0 +1,2 @@
+@reboot {{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.sh 1>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.log 2>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.err
+*/5 * * * * {{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.sh 1>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.log 2>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.err

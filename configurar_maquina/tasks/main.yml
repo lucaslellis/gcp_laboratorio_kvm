@@ -1,0 +1,20 @@
+---
+# Role para configuracao de maquina com KVM
+# Variaveis esperadas:
+#   {{ dir_kvm }} - diretorio em que serao armazenados os discos virtuais do KVM
+#   {{ disco_dados }} - Device que sera utilizado como disco de dados
+#   {{ mount_point_dados }} - Mount point para o disco de dados
+#   {{ novo_home }} - Diretorio no disco de dados que sera usado para o novo home do usuario de acesso
+
+- import_tasks: disco_dados.yml
+
+- import_tasks: pacotes.yml
+
+- import_tasks: kvm.yml
+
+- import_tasks: home_usuario.yml
+
+- import_tasks: vagrant.yml
+
+- import_tasks: servicos.yml
+...

@@ -1,0 +1,12 @@
+---
+- name: Aguardar o SSH estar disponivel
+  wait_for: host={{ endereco_ipv4_externo.address }} port=22 delay=30 timeout=120
+  # Nao e necessario aguardar quando a VM ja foi criada em outra execucao
+  when: (not vm_existe.resources is defined) or ((vm_existe.resources|length) == 0)
+
+- name: Atualizar chave no known_hosts
+  known_hosts:
+    name: "{{ endereco_ipv4_externo.address }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -trsa ' + endereco_ipv4_externo.address) }}"
+    state: present
+...

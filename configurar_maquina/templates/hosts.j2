@@ -1,0 +1,127 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+######
+## VMs
+
+# linux00 - OEM
+192.168.49.10 linux00.{{ dominio }} linux00
+
+# linux01 - VMDS
+192.168.49.11 linux01.{{ dominio }} linux01
+
+# linux02 - VMDS
+192.168.49.12 linux01.{{ dominio }} linux02
+
+# cluster 11.2.0.4 - bancos: racdb01
+192.168.49.13 linux03.{{ dominio }} linux03
+192.168.49.213 linux03-vip.{{ dominio }} linux03-vip
+192.168.49.14 linux04.{{ dominio }} linux04
+192.168.49.214 linux04-vip.{{ dominio }} linux04-vip
+192.168.49.200 rac00-scan.{{ dominio }} rac00-scan
+192.168.49.201 rac00-scan.{{ dominio }} rac00-scan
+192.168.49.202 rac00-scan.{{ dominio }} rac00-scan
+
+# cluster 12.1.0.2
+192.168.49.15 linux05.{{ dominio }} linux05
+192.168.49.215 linux05-vip.{{ dominio }} linux05-vip
+192.168.49.16 linux06.{{ dominio }} linux06
+192.168.49.216 linux06-vip.{{ dominio }} linux06-vip
+192.168.49.203 rac01-scan.{{ dominio }} rac01-scan
+192.168.49.204 rac01-scan.{{ dominio }} rac01-scan
+192.168.49.205 rac01-scan.{{ dominio }} rac01-scan
+
+# cluster 11.2.0.4 - Red Hat EL 6
+192.168.49.17 linux07.{{ dominio }} linux07
+192.168.49.217 linux07-vip.{{ dominio }} linux07-vip
+192.168.49.18 linux08.{{ dominio }} linux08
+192.168.49.218 linux08-vip.{{ dominio }} linux08-vip
+192.168.49.206 rac02-scan.{{ dominio }} rac02-scan
+192.168.49.207 rac02-scan.{{ dominio }} rac02-scan
+192.168.49.208 rac02-scan.{{ dominio }} rac02-scan
+
+# win01 - SQL Server 2016
+192.168.49.19 win01.{{ dominio }} win01
+
+# 11.2.0.4 Single-Instance - GG for Oracle - bancos: orcl001 e orcl002
+192.168.49.20 linux09.{{ dominio }} linux09
+
+# Somente client - swingbench
+192.168.49.21 linux10.{{ dominio }} linux10
+
+# 11.2.0.4 Single-Instance - GG for Big Data - bancos: orcl001
+192.168.49.22 linux11.{{ dominio }} linux11
+
+# cluster 11.2.0.4 - Oracle linux 6 - bancos: racdb01
+# HOSTS:
+192.168.49.23 linux12.{{ dominio }} linux12
+192.168.59.23 linux12-priv.{{ dominio }} linux12-priv
+192.168.49.24 linux13.{{ dominio }} linux13
+192.168.59.24 linux13-priv.{{ dominio }} linux13-priv
+# VIP:
+192.168.49.123 linux12-vip.{{ dominio }} linux12
+192.168.49.124 linux13-vip.{{ dominio }} linux13
+# SCAN:
+192.168.49.219 rac03-scan.{{ dominio }} rac03-scan
+192.168.49.220 rac03-scan.{{ dominio }} rac03-scan
+192.168.49.221 rac03-scan.{{ dominio }} rac03-scan
+
+# cluster 11.2.0.4 - Oracle linux 6 - bancos: racdb02
+# HOSTS:
+192.168.49.25 linux14.{{ dominio }} linux14
+192.168.49.26 linux15.{{ dominio }} linux15
+# VIP:
+192.168.49.125 linux14-vip.{{ dominio }} linux14
+192.168.49.126 linux15-vip.{{ dominio }} linux15
+# SCAN:
+192.168.49.222 rac04-scan.{{ dominio }} rac04-scan
+192.168.49.223 rac04-scan.{{ dominio }} rac04-scan
+192.168.49.224 rac04-scan.{{ dominio }} rac04-scan
+
+# oem 13.3 para 13.4 - linux16
+192.168.49.27 linux16.{{ dominio }} linux16
+
+# linux17 - single-instance 19c - bancos: cdb001
+192.168.49.28 linux17.{{ dominio }} linux17
+
+# linux18 - single-instance 19c - bancos: cdb002
+192.168.49.29 linux18.{{ dominio }} linux18
+
+# linux19 - single-instance 19c - bancos: cdb003
+192.168.49.30 linux19.{{ dominio }} linux19
+
+# linux20 - maquina para testes de instalacao SAP
+192.168.49.31 linux20.{{ dominio }} linux20
+
+# linux21 - 11.2.0.4 Single-Instance - bancos: orcl001
+192.168.49.32 linux11.{{ dominio }} linux21
+
+# exacell01 - Exadata Storage Server
+192.168.49.33 exacell01adm.{{ dominio }} exacelladm01
+192.168.59.33 exacell01.{{ dominio }} exacell01
+
+# exacell02 - Exadata Storage Server
+192.168.49.34 exacell02adm.{{ dominio }} exacelladm02
+192.168.59.34 exacell02.{{ dominio }} exacell02
+
+# cluster 11.2.0.4 - Oracle Linux 6 - Exadata - bancos: exadb01
+# HOSTS:
+192.168.49.35 linux22.{{ dominio }} linux22
+192.168.49.36 linux23.{{ dominio }} linux23
+# VIP:
+192.168.49.127 linux22-vip.{{ dominio }} linux22
+192.168.49.128 linux23-vip.{{ dominio }} linux23
+# SCAN:
+192.168.49.225 rac05-scan.{{ dominio }} rac05-scan
+192.168.49.226 rac05-scan.{{ dominio }} rac05-scan
+192.168.49.227 rac05-scan.{{ dominio }} rac05-scan
+
+## Ansible - Lab
+192.168.49.37 linux24.{{ dominio }} linux24
+192.168.49.38 linux25.{{ dominio }} linux25
+192.168.49.39 linux26.{{ dominio }} linux26
+
+######
+## VMs - FIM
+{{ ip_interno }} {{ nome_vm }}.{{ dominio }} nome_vm  # Added by Google
+169.254.169.254 metadata.google.internal  # Added by Google

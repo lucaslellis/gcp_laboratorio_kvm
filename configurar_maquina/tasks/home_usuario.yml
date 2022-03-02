@@ -1,0 +1,56 @@
+---
+- name: Verificar se o home do usuario ja foi copiado para o disco de dados
+  stat:
+    path: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/.bashrc"
+  register: home_usuario_copiado
+
+- name: Copiar home do usuario para disco de dados
+  synchronize:
+    src: "/home/{{ ansible_facts.env.SUDO_USER }}"
+    dest: "{{ novo_home }}/"
+    archive: True
+    rsync_opts:
+      - "-X"
+  delegate_to: "{{ inventory_hostname }}"
+  when: not home_usuario_copiado.stat.exists
+
+- name: Alterar home do usuario
+  # feito via lineinfile porque o usermod nao funciona com usuarios conectados
+  lineinfile:
+    path: /etc/passwd
+    backrefs: yes
+    regexp: "^({{ ansible_facts.env.SUDO_USER }}:[^:]*:[0-9]+:[0-9]+:[^:]*):.+$"
+    line: \g<1>:{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}:{{ shell_default }}
+    state: present
+
+- name: Verificar se context do SELinux foi aplicado
+  shell:
+    cmd: "ls -laZ {{ mount_point_dados }} | grep -i home | grep -i home_root_t | wc -l"
+  register: context_selinux_existe
+  changed_when: context_selinux_existe.rc == 0
+
+- name: Aplicar context do SELinux
+  shell:
+    cmd: "semanage fcontext -a -e /home {{ mount_point_dados }}/home && restorecon -R {{ mount_point_dados }}/home"
+  when: context_selinux_existe.stdout == "0"
+  register: context_selinux_aplicado
+  changed_when: context_selinux_aplicado.rc == 0
+
+- name: Deploy do bash_profile
+  copy:
+    src: bash_profile.sh
+    dest: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/.bash_profile"
+    mode: 0644
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+  become: False
+
+- name: Criar diretorio para armazenar instaladores
+  file:
+    name: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/software"
+    state: directory
+    mode: 0755
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+  become: False
+...

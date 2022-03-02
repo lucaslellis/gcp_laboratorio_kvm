@@ -1,0 +1,49 @@
+---
+- name: Adicionar repositorio do Vagrant
+  get_url:
+    url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+    dest: /etc/yum.repos.d/hashicorp.repo
+
+- name: Instalar o Vagrant
+  package:
+    name: vagrant
+    state: present
+
+- name: Verificar se o plugin para KVM do Vagrant esta instalado
+  shell:
+    cmd: "vagrant plugin list | grep -i vagrant-libvirt | wc -l"
+  register: vagrant_plugin_libvirt_instalado
+  changed_when: vagrant_plugin_libvirt_instalado.rc == 0
+  become: False
+  environment:
+    HOME: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}"
+
+- name: Instalar plugin para KVM do Vagrant
+  command: "vagrant plugin install vagrant-libvirt"
+  register: instalacao_plugin_libvirt
+  when: vagrant_plugin_libvirt_instalado.stdout == "0"
+  changed_when: instalacao_plugin_libvirt.rc == 0
+  become: False
+  environment:
+    HOME: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}"
+
+- name: Criar estrutura de diretorios do Vagrant
+  file:
+    name: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/vagrant/linux00"
+    state: directory
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+    mode: 0755
+    recurse: yes
+  become: False
+  register: vagrant_directory
+
+- name: Copiar Vagrantfile de exemplo
+  template:
+    src: vagrant_linux00.j2
+    dest: "{{ vagrant_directory.path }}/Vagrantfile"
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+    mode: 0644
+  become: False
+...

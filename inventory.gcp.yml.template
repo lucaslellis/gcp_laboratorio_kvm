@@ -1,0 +1,18 @@
+########################
+## NAO ALTERAR AS VARIAVEIS ABAIXO
+plugin: gcp_compute
+auth_kind: serviceaccount
+hostnames:
+  - name
+########################
+
+########################
+## PREENCHER AS VARIAVEIS ABAIXO
+
+projects:
+  # gcloud config list | grep project
+  - < ID DO PROJETO>
+
+# cat <<caminho do arquivo json de credenciais>> | ansible-vault encrypt_string -
+# Exemplo: cat  '/mnt/c/Users/lucas/GoogleCloud/ornate-wind-213584-2244d4af0fd5.json'  | ansible-vault encrypt_string -
+service_account_contents:

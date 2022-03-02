@@ -1,0 +1,31 @@
+---
+# Playbook para criar e provisionar a maquina para o KVM - vm01
+
+# Play para criar a maquina
+- name: Criar maquina para servir de host KVM
+  hosts: localhost
+  gather_facts: false
+
+  pre_tasks:
+    - name: Carregar variaveis
+      include_vars:
+        file: vars.yml
+
+  roles:
+    - criar_maquina
+
+# Play para configurar a maquina
+- name: Configurar maquina
+  hosts: novas_instancias
+  connection: ssh
+  become: True
+  become_method: sudo
+
+  pre_tasks:
+    - name: Carregar variaveis
+      include_vars:
+        file: vars.yml
+
+  roles:
+    - configurar_maquina
+...

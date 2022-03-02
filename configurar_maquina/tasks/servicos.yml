@@ -1,0 +1,92 @@
+---
+- name: Desabilitar KSM
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: False
+  loop:
+    - ksm
+    - ksmtuned
+
+- name: Deploy de script de servico do VNC
+  template:
+    src: vncserver_service.j2
+    dest: "/etc/systemd/system/vncserver@.service"
+    mode: 0755
+
+- name: Habilitar servico do VNC
+  systemd:
+    name: "vncserver@:1.service"
+    enabled: True
+    state: stopped
+    daemon-reload: True
+
+- name: Criar pasta de configuracao do VNC
+  file:
+    name: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/.vnc"
+    state: directory
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+  become: False
+  register: vnc_config_caminho
+
+- name: Copiar xstartup.sh para XFCE
+  copy:
+    src: xstartup.sh
+    dest: "{{ vnc_config_caminho.path }}/xstartup"
+    mode: 0755
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+  become: False
+
+- name: Copiar arquivo hosts
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    mode: 0644
+    owner: root
+    group: root
+    backup: True
+
+- name: Copiar arquivo de configuracao do dnsmasq
+  template:
+    src: dnsmasq_conf.j2
+    dest: /etc/dnsmasq.d/01-local.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Deploy de script de reload do dnsmasq
+  copy:
+    src: reload_dnsmasq.sh
+    dest: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/"
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+    mode: 0700
+
+- name: Reload do dnsmasq
+  command: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/reload_dnsmasq.sh"
+  register: reload_dnsmasq
+  changed_when: reload_dnsmasq.rc == 0
+
+- name: Copiar script do FreeDNS
+  template:
+    src: freedns_sh.j2
+    dest: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.sh"
+    owner: "{{ ansible_facts.env.SUDO_USER }}"
+    group: "{{ ansible_facts.env.SUDO_USER }}"
+    mode: 0700
+
+- name: Executar script do FreeDNS
+  command: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.sh"
+  register: reload_freedns
+  changed_when: reload_freedns.rc == 0
+
+- name: Agendar script do FreeDNS na cron do root - /etc/cron.d/01-freedns.cron
+  template:
+    src: freedns_cron.j2
+    dest: /etc/cron.d/01-freedns
+    owner: root
+    group: root
+    mode: 0644
+...

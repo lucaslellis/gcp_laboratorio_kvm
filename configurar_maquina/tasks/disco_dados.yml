@@ -1,0 +1,49 @@
+---
+- name: Criar mount point para o disco de dados
+  file:
+    name: "{{ mount_point_dados }}"
+    mode: 0700
+    state: directory
+    owner: root
+    group: root
+  # Evitar alterar permissoes quando o disco ja esta montado
+  when:
+    ansible_mounts | selectattr('mount', 'equalto', mount_point_dados) | list | length == 0
+
+- name: Criar filesystem no disco de dados
+  filesystem:
+    dev: "{{ disco_dados }}"
+    fstype: xfs
+    state: present
+
+- name: Obtem UUID da particao criada no disco de dados
+  command: "blkid -s UUID -o value {{ disco_dados }}"
+  register: uuid_disco_dados
+
+- name: Montar disco de dados
+  mount:
+    path: "{{ mount_point_dados }}"
+    src: UUID="{{ uuid_disco_dados.stdout }}"
+    fstype: xfs
+    opts: discard,defaults,nofail
+    dump: "0"
+    passno: "2"
+    state: mounted
+
+- name: Definir permissao no disco de dados
+  file:
+    path: "{{ mount_point_dados }}"
+    mode: 0755
+    state: directory
+
+- name: Criar novos diretorios no disco de dados
+  file:
+    name: "{{ item }}"
+    mode: 0755
+    state: directory
+    owner: root
+    group: root
+  loop:
+    - "{{ novo_home }}"
+    - "{{ dir_kvm }}"
+...
