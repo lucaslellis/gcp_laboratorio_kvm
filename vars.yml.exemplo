@@ -160,7 +160,7 @@ dominio: gcp.jumpingcrab.com
 # gcloud compute machine-types list --filter="name~'^n2-.+'" --filter="zone: (southamerica-east1-c)" --sort-by="zone,cpus,memory_gb"
 tipo_maquina: n2-custom-8-98304-ext
 
-# Ver seção FreeDNS no arquivo README.md
+# Ver secao FreeDNS no arquivo README.md
 freedns_link: 'https://freedns.afraid.org/dynamic/update.php?aXlyRFJWT6789agtgh186351.RhTzc6MjAyNzQ3Nzk='
 
 
@@ -179,7 +179,7 @@ discos:
   # Disco de dados
   - nome: "{{ nome_vm }}-1"
     tamanho: 1024
-    tipo: pd-balanced
+    tipo: pd-standard
     imagem: ''
 
 mount_point_dados: "/data"

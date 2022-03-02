@@ -38,7 +38,7 @@ dominio:
 # gcloud compute machine-types list --filter="name~'^n2-.+'" --filter="zone: (southamerica-east1-c)" --sort-by="zone,cpus,memory_gb"
 tipo_maquina:
 
-# Ver seção FreeDNS no arquivo README.md
+# Ver secao FreeDNS no arquivo README.md
 freedns_link:
 
 
@@ -57,7 +57,7 @@ discos:
   # Disco de dados
   - nome: "{{ nome_vm }}-1"
     tamanho: 1024
-    tipo: pd-balanced
+    tipo: pd-standard
     imagem: ''
 
 mount_point_dados: "/data"
