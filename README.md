@@ -218,6 +218,22 @@ A opção `"-- -L5901:localhost:5901"` faz o [tunelamento da porta do VNC.](http
   vagrant ssh
   ```
 
+# Comandos para ligar e desligar a máquina
+
+  ```bash
+  # Desligar
+  gcloud compute instances stop vm01
+
+  # Ligar
+  gcloud compute instances start vm01
+
+  # Colocar para hibernar
+  gcloud beta compute instances suspend vm01
+
+  # Ligar novamente a partir da hibernacao
+  gcloud beta compute instances resume vm01
+  ```
+
 # Destruir recursos criados (caso não vá mais usar)
 
   ```bash
