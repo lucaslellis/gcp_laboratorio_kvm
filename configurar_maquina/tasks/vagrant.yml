@@ -45,5 +45,6 @@
     owner: "{{ ansible_facts.env.SUDO_USER }}"
     group: "{{ ansible_facts.env.SUDO_USER }}"
     mode: 0644
+    force: no
   become: False
 ...
