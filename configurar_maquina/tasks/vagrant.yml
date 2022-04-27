@@ -1,13 +1,33 @@
 ---
-- name: Adicionar repositorio do Vagrant
+- name: Adicionar repositorio da Hashicorp
   get_url:
     url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
     dest: /etc/yum.repos.d/hashicorp.repo
 
-- name: Instalar o Vagrant
+- name: Instalar o Vagrant e o Packer
   package:
-    name: vagrant
+    name: 
+      - vagrant
+      - packer
     state: present
+
+- name: Verificar se o plugin para VirtualBox do Vagrant esta instalado
+  shell:
+    cmd: "vagrant plugin list | grep -i vagrant-libvirt | wc -l"
+  register: vagrant_plugin_virtualbox_instalado
+  changed_when: vagrant_plugin_virtualbox_instalado.rc == 0
+  become: False
+  environment:
+    HOME: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}"
+
+- name: Instalar plugin para VirtualBox do Vagrant
+  command: "vagrant plugin install vagrant-vbguest"
+  register: instalacao_plugin_vbguest
+  when: vagrant_plugin_virtualbox_instalado.stdout == "0"
+  changed_when: instalacao_plugin_vbguest.rc == 0
+  become: False
+  environment:
+    HOME: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}"
 
 - name: Verificar se o plugin para KVM do Vagrant esta instalado
   shell:
