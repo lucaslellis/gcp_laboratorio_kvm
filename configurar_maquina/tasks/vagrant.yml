@@ -6,7 +6,7 @@
 
 - name: Instalar o Vagrant e o Packer
   package:
-    name: 
+    name:
       - vagrant
       - packer
     state: present
