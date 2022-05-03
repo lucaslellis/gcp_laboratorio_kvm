@@ -24,6 +24,7 @@
       - qemu-kvm
       - rsync
       - ruby-devel
+      - system-config-kickstart
       - telnet
       - tigervnc-server
       - wget
