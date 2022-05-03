@@ -2,7 +2,7 @@
 - name: Criar rede VPC
   google.cloud.gcp_compute_network:
    name: "{{ nome_rede_vpc }}"
-   auto_create_subnetworks: 'true'
+   auto_create_subnetworks: 'false'
    project: "{{ gcp_project }}"
    auth_kind: "{{ gcp_cred_kind }}"
    service_account_contents: "{{ gcp_cred_contents }}"
@@ -10,6 +10,20 @@
      - https://www.googleapis.com/auth/compute
    state: present
   register: rede_vpc
+
+- name: Criar subnet na rede VPC
+  google.cloud.gcp_compute_subnetwork:
+    name: "{{ nome_rede_vpc }}"
+    network:
+      selfLink: "global/networks/{{ rede_vpc.name }}"
+    region: "{{ region }}"
+    ip_cidr_range: "{{ ip_range }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    scopes:
+      - https://www.googleapis.com/auth/compute
+    state: present
 
 - name: Firewall VPC - libera ICMP (ping)
   google.cloud.gcp_compute_firewall:

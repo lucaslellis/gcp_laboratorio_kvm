@@ -93,10 +93,23 @@
         service_account_contents: "{{ gcp_cred_contents }}"
         state: absent
 
+    - name: Destruir subnet VPC
+      google.cloud.gcp_compute_subnetwork:
+        name: "{{ nome_rede_vpc }}"
+        network:
+          selfLink: "global/networks/{{ nome_rede_vpc }}"
+        region: "{{ region }}"
+        ip_cidr_range: "{{ ip_range }}"
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        scopes:
+          - https://www.googleapis.com/auth/compute
+        state: absent
+
     - name: Destruir rede VPC
       google.cloud.gcp_compute_network:
        name: "{{ nome_rede_vpc }}"
-       auto_create_subnetworks: 'true'
        project: "{{ gcp_project }}"
        auth_kind: "{{ gcp_cred_kind }}"
        service_account_contents: "{{ gcp_cred_contents }}"

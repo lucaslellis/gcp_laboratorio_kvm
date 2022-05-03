@@ -147,6 +147,7 @@ gcp_cred_contents: !vault |
 # Para a zone southamerica-east1 o range e 10.158.0.0/20
 # Consultar os demais ranges: gcloud compute networks subnets list --filter="network: ( default)" --sort-by="region"
 ip_interno: 10.158.0.3
+ip_range: 10.158.0.0/20
 
 # Hostname desejado
 nome_vm: vm01
