@@ -7,10 +7,10 @@
 gcp_project: ornate-wind-213584
 
 # gcloud config list | grep region
-region: "southamerica-east1-c"
+region: "southamerica-east1"
 
 # gcloud config list | grep zone
-zone: "southamerica-east1"
+zone: "southamerica-east1-c"
 
 # Valor fixo
 gcp_cred_kind: serviceaccount
