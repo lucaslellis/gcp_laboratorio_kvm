@@ -27,6 +27,7 @@
       - system-config-kickstart
       - telnet
       - tigervnc-server
+      - tree
       - unzip
       - wget
       - "@xfce"
