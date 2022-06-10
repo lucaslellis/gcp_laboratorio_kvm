@@ -20,6 +20,8 @@
       - make
       - perl
       - policycoreutils-python
+      - python3
+      - python3-pip
       - qemu
       - qemu-kvm
       - rsync
