@@ -8,8 +8,12 @@
 - name: Habilitar servico do KVM
   service:
     name: libvirtd
-    state: started
     enabled: true
+
+- name: Iniciar servico do KVM
+  service:
+    name: libvirtd
+    state: started
 
 - name: Verificar se existe pool default do KVM
   shell:
