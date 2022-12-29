@@ -11,7 +11,7 @@
 192.168.49.11 linux01.{{ dominio }} linux01
 
 # linux02 - VMDS
-192.168.49.12 linux01.{{ dominio }} linux02
+192.168.49.12 linux02.{{ dominio }} linux02
 
 # cluster 11.2.0.4 - bancos: racdb01
 192.168.49.13 linux03.{{ dominio }} linux03
@@ -123,5 +123,6 @@
 
 ######
 ## VMs - FIM
-{{ ip_interno }} {{ nome_vm }}.{{ dominio }} nome_vm  # Added by Google
+{{ ip_interno }} {{ nome_vm }}.{{ dominio }} {{ nome_vm }}  # Added by Google
 169.254.169.254 metadata.google.internal  # Added by Google
+

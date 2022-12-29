@@ -5,9 +5,11 @@
     state: present
 
 - name: Instalar pacotes
-  package:
+  dnf:
+    enablerepo: crb
     name:
       - ansible
+      - ansible-lint
       - bind-utils
       - bzip2
       - dnsmasq
@@ -19,19 +21,20 @@
       - libvirt-devel
       - make
       - perl
-      - policycoreutils-python
+      - policycoreutils-python-utils
       - python3
       - python3-pip
-      - qemu
       - qemu-kvm
       - rsync
       - ruby-devel
-      - system-config-kickstart
       - telnet
       - tigervnc-server
       - tree
       - unzip
       - wget
       - "@xfce"
+      - "@Virtualization Hypervisor"
+      - "@Virtualization Tools"
+      - "@Development Tools"
     state: present
 ...

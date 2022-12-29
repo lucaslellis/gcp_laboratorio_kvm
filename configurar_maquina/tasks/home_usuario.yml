@@ -23,18 +23,12 @@
     line: \g<1>:{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}:{{ shell_default }}
     state: present
 
-- name: Verificar se context do SELinux foi aplicado
-  shell:
-    cmd: "ls -laZ {{ mount_point_dados }} | grep -i home | grep -i home_root_t | wc -l"
-  register: context_selinux_existe
-  changed_when: context_selinux_existe.rc == 0
-
 - name: Aplicar context do SELinux
   shell:
-    cmd: "semanage fcontext -a -e /home {{ mount_point_dados }}/home && restorecon -R {{ mount_point_dados }}/home"
-  when: context_selinux_existe.stdout == "0"
+    cmd: "semanage fcontext -a -e /home {{ mount_point_dados }}/home 2> >(grep -v 'already exists') ; restorecon -R {{ mount_point_dados }}/home"
   register: context_selinux_aplicado
   changed_when: context_selinux_aplicado.rc == 0
+  ignore_errors: True
 
 - name: Deploy do bash_profile
   copy:

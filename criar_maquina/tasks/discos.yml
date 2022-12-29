@@ -16,7 +16,7 @@
     state: present
   register: disco_so
 
-- name: Criar disco de dados
+- name: Criar disco de dados em branco
   google.cloud.gcp_compute_disk:
     name: "{{ discos[1].nome }}"
     size_gb: "{{ discos[1].tamanho }}"
@@ -30,4 +30,22 @@
      - https://www.googleapis.com/auth/compute
     state: present
   register: disco_dados
+  when: discos[1].imagem is not defined
+
+- name: Criar disco de dados a partir de imagem
+  google.cloud.gcp_compute_disk:
+    name: "{{ discos[1].nome }}"
+    size_gb: "{{ discos[1].tamanho }}"
+    # gcloud compute disk-types list --uri | grep southamerica-east1-c
+    type: "{{ discos[1].tipo }}"
+    zone: "{{ zone }}"
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_contents: "{{ gcp_cred_contents }}"
+    scopes:
+     - https://www.googleapis.com/auth/compute
+    state: present
+    source_image: "{{ discos[1].imagem }}"
+  register: disco_dados  
+  when: discos[1].imagem is defined
 ...

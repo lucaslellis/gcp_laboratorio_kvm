@@ -51,3 +51,5 @@ Thumbs.db
 gcp_laboratorio_kvm.sublime-workspace
 Readme.html
 vars.yml
+auth.json
+inventory.gcp.yml

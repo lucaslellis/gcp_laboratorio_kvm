@@ -1,13 +1,4 @@
 ---
-- name: Desabilitar KSM
-  service:
-    name: "{{ item }}"
-    state: stopped
-    enabled: False
-  loop:
-    - ksm
-    - ksmtuned
-
 - name: Deploy de script de servico do VNC
   template:
     src: vncserver_service.j2
@@ -48,10 +39,10 @@
     group: root
     backup: True
 
-- name: Copiar arquivo de configuracao do dnsmasq
+- name: Copiar arquivo de configuracao do dnsmasq do libvirt
   template:
-    src: dnsmasq_conf.j2
-    dest: /etc/dnsmasq.d/01-local.conf
+    src: virsh_net_define.j2
+    dest: /tmp/virsh_net_define.xml
     mode: 0644
     owner: root
     group: root
@@ -65,7 +56,7 @@
     mode: 0700
 
 - name: Reload do dnsmasq
-  command: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/reload_dnsmasq.sh"
+  shell: "virsh net-define /tmp/virsh_net_define.xml && virsh net-destroy default 2>/dev/null ; virsh net-start default"
   register: reload_dnsmasq
   changed_when: reload_dnsmasq.rc == 0
 
@@ -89,4 +80,16 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Liberar rede interna do Vagrant no firewalld
+  firewalld:
+    zone: trusted
+    state: enabled
+    permanent: True
+    immediate: True
+    source: "{{ item }}"
+  loop:
+    - 192.168.49.0/24
+    - 192.168.121.0/24
+    - 192.168.122.0/24
 ...

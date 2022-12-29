@@ -10,21 +10,28 @@
   when:
     ansible_mounts | selectattr('mount', 'equalto', mount_point_dados) | list | length == 0
 
+- name: Verificar se disco de dados ja esta particionado
+  command: ls -l "/dev/disk/by-id/google-{{ discos[1].nome }}-part*"
+  register: ls_part
+  failed_when: ls_part is not defined
+
 - name: Criar particao no disco de dados
   parted:
-    device: "{{ disco_dados }}"
+    device: "/dev/disk/by-id/google-{{ discos[1].nome }}"
     number: 1
     fs_type: xfs
     state: present
+  when: ls_part.rc != 0
 
 - name: Criar filesystem na particao do disco de dados
   filesystem:
-    dev: "{{ disco_dados }}1"
+    dev: "/dev/disk/by-id/google-{{ discos[1].nome }}-part1"
     fstype: xfs
     state: present
+  when: ls_part.rc != 0
 
 - name: Obtem UUID da particao criada no disco de dados
-  command: "blkid -s UUID -o value {{ disco_dados }}1"
+  command: "blkid -s UUID -o value /dev/disk/by-id/google-{{ discos[1].nome }}-part1"
   register: uuid_disco_dados
 
 - name: Montar disco de dados
