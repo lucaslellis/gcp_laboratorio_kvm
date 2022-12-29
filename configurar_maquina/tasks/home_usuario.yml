@@ -28,7 +28,6 @@
     cmd: "semanage fcontext -a -e /home {{ mount_point_dados }}/home 2> >(grep -v 'already exists') ; restorecon -R {{ mount_point_dados }}/home"
   register: context_selinux_aplicado
   changed_when: context_selinux_aplicado.rc == 0
-  ignore_errors: True
 
 - name: Deploy do bash_profile
   copy:
