@@ -38,12 +38,15 @@
     group: "{{ ansible_facts.env.SUDO_USER }}"
   become: False
 
-- name: Criar diretorio para armazenar instaladores
+- name: Criar diretorio para armazenar instaladores e backups RMAN
   file:
-    name: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/software"
+    name: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/{{ item }}"
     state: directory
     mode: 0755
     owner: "{{ ansible_facts.env.SUDO_USER }}"
     group: "{{ ansible_facts.env.SUDO_USER }}"
   become: False
+  loop:
+    - software
+    - backup_rman
 ...
