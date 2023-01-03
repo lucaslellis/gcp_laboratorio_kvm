@@ -179,7 +179,7 @@ discos:
     imagem: 'projects/centos-cloud/global/images/family/centos-7'
   # Disco de dados
   - nome: "{{ nome_vm }}-1"
-    tamanho: 1024
+    tamanho: 1950
     tipo: pd-standard
     imagem: ''
 
