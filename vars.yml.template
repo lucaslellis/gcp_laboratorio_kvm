@@ -54,7 +54,7 @@ discos:
   - nome: "{{ nome_vm }}"
     tamanho: 20
     tipo: pd-ssd
-    imagem: 'projects/centos-cloud/global/images/family/centos-7'
+    imagem: 'projects/rocky-linux-cloud/global/images/family/rocky-linux-9-optimized-gcp'
   # Disco de dados
   - nome: "{{ nome_vm }}-1"
     tamanho: 1950
