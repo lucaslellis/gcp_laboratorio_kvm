@@ -1,0 +1,2 @@
+@reboot {{ ansible_facts.env.SUDO_USER }} {{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.sh 1>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.log 2>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.err
+*/5 * * * * {{ ansible_facts.env.SUDO_USER }} {{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.sh 1>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.log 2>{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.err

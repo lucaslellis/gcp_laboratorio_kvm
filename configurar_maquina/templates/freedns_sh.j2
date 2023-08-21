@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Script agendado na cron do root, /etc/cron.d/01-freedns
-
-if [[ ! -z '{{ freedns_link }}' ]]; then
-    sleep 15
-    wget --read-timeout=0.0 --waitretry=5 --tries=400 '{{ freedns_link }}' -O /dev/null
-fi

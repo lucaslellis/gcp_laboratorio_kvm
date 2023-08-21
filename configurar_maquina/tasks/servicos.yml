@@ -60,23 +60,23 @@
   register: reload_dnsmasq
   changed_when: reload_dnsmasq.rc == 0
 
-- name: Copiar script do FreeDNS
+- name: Copiar script do Cloudflare
   template:
-    src: freedns_sh.j2
-    dest: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.sh"
+    src: cloudflare_sh.j2
+    dest: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.sh"
     owner: "{{ ansible_facts.env.SUDO_USER }}"
     group: "{{ ansible_facts.env.SUDO_USER }}"
     mode: 0700
 
-- name: Executar script do FreeDNS
-  command: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/freedns.sh"
-  register: reload_freedns
-  changed_when: reload_freedns.rc == 0
+- name: Executar script do Cloudflare
+  command: "{{ novo_home }}/{{ ansible_facts.env.SUDO_USER }}/scripts/cloudflare.sh"
+  register: reload_cloudflare
+  changed_when: reload_cloudflare.rc == 0
 
-- name: Agendar script do FreeDNS na cron do root - /etc/cron.d/01-freedns.cron
+- name: Agendar script do Cloudflare na cron do root - /etc/cron.d/01-cloudflare.cron
   template:
-    src: freedns_cron.j2
-    dest: /etc/cron.d/01-freedns
+    src: cloudflare_cron.j2
+    dest: /etc/cron.d/01-cloudflare
     owner: root
     group: root
     mode: 0644

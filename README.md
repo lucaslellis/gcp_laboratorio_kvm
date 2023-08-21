@@ -51,30 +51,21 @@ author: Lucas Pimentel Lellis
   gcloud compute project-info add-metadata --metadata-from-file ssh-keys="${HOME}/google-cloud-ssh.txt"
   ```
 
-# FreeDNS (Opcional)
+# Cloudflare (Opcional)
 
-* Após criar uma conta no FreeDNS, ir na seção Subdomais (menu à esquerda)
+* Caso você tenha um domínio e uma conta na Cloudflare, é possível gerar um
+  [token de API](https://dash.cloudflare.com/profile/api-tokens), usando o template
+  *"Edit Zone DNS"*, a fim de fazer a atualização do registro de DNS da máquina para o IP
+  Externo.
 
-  ![](images/img09.png)
+  As variáveis abaixo devem ser definidas no arquivo vars.yml:
 
-* Clicar em Add a Subdomain
-
-  ![](images/img10.png)
-
-* Criar um registro do tipo A
-
-  ![](images/img11.png)
-
-* Voltar ao menu da esquerda e clicar em Dynamic DNS
-
-  ![](images/img12.png)
-
-* Clicar com o botão direito em Direct Link e Copiar o Link
-
-  ![](images/img13.png)
-
-* Inserir o link copiado na variável freedns_link do arquivo vars.yml
-
+  ```default
+  cloudflare_email: <seu email cadastrado na cloudflare>
+  cloudflare_token: <API TOKEN>
+  cloudflare_zone: <exemplo: whatever.com>
+  cloudflare_record: <exemplo: vm01.gcp.whatever.com>
+  ```
 
 # Ansible
 
