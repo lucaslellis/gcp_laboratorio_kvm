@@ -56,7 +56,7 @@
     mode: 0700
 
 - name: Reload do dnsmasq
-  shell: "virsh net-undefine default && virsh net-define /tmp/virsh_net_define.xml && virsh net-destroy default 2>/dev/null ; virsh net-start default"
+  shell: "virsh net-undefine default 2>/dev/null; virsh net-destroy default 2>/dev/null ;  virsh net-define /tmp/virsh_net_define.xml && virsh net-destroy default 2>/dev/null ; virsh net-start default"
   register: reload_dnsmasq
   changed_when: reload_dnsmasq.rc == 0
 
