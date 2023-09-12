@@ -29,6 +29,7 @@
       - ruby-devel
       - telnet
       - tigervnc-server
+      - traceroute
       - tree
       - unzip
       - wget
