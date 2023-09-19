@@ -15,7 +15,7 @@ author: Lucas Pimentel Lellis
 
 * Sistema Operacional suportado pelo Ansible (Linux ou Mac OS - no documento é usado o Ubuntu 20.04 via Windows Subsystem for Linux - WSL)
 * Conta no Google Cloud e projeto criado no Compute Engine - <https://console.cloud.google.com>
-* Conta no FreeDNS - <https://freedns.afraid.org/> - Opcional
+* Conta na Cloudflare para DDNS - <https://cloudflare.com/> - Opcional
 
 # Google Cloud SDK
 
